@@ -1,0 +1,39 @@
+---
+import { ArrowUpRightIcon } from "lucide-react";
+import { siteConfig } from "@/config/site";
+
+interface Props {
+  title?: string;
+  description?: string;
+}
+const {
+  title = "Let's grow something *together*.",
+  description = "Consulting, research collaborations or just a conversation about water and energy in agriculture.",
+} = Astro.props;
+const parts = title.split(/(\*[^*]+\*)/g).filter(Boolean);
+---
+
+<section class="container-page pt-24 md:pt-32">
+  <div class="relative overflow-hidden rounded-[2rem] bg-primary px-6 py-20 text-center text-primary-foreground md:px-16 md:py-28" data-reveal="scale">
+    <div class="pointer-events-none absolute inset-0 opacity-15 [background-image:radial-gradient(currentColor_1px,transparent_1px)] [background-size:22px_22px]" aria-hidden="true"></div>
+    <h2 class="relative mx-auto max-w-4xl text-[clamp(2.5rem,7vw,6rem)] leading-[0.95] font-medium tracking-[-0.03em]">
+      {parts.map((p) => (p.startsWith("*") ? <em class="font-display font-normal italic">{p.slice(1, -1)}</em> : p))}
+    </h2>
+    <p class="relative mx-auto mt-6 max-w-xl opacity-80">{description}</p>
+    <div class="relative mt-12 flex justify-center">
+      <a
+        href="/contact"
+        data-magnetic
+        class="group inline-flex size-40 flex-col items-center justify-center gap-1 rounded-full bg-background text-sm font-medium text-foreground shadow-2xl transition-[width,height] md:size-44"
+      >
+        <span data-magnetic-inner class="flex flex-col items-center gap-1">
+          <ArrowUpRightIcon className="size-6 transition-transform duration-500 group-hover:rotate-45" />
+          Get in touch
+        </span>
+      </a>
+    </div>
+    <p class="relative mt-10 text-sm opacity-80">
+      or email <a href={`mailto:${siteConfig.email}`} class="underline underline-offset-4">{siteConfig.email}</a>
+    </p>
+  </div>
+</section>

@@ -1,0 +1,109 @@
+---
+import { ArrowUpRightIcon, AwardIcon, CalendarIcon, FileTextIcon, MapPinIcon, PresentationIcon, UsersIcon, GraduationCapIcon } from "lucide-react";
+import PageLayout from "@/layouts/PageLayout.astro";
+import { Badge } from "@/components/ui/badge";
+import { getCertifications } from "@/lib/resume";
+import { formatDate, formatMonth } from "@/lib/format";
+
+const certs = await getCertifications();
+const types = [...new Set(certs.map((c) => c.data.type))];
+const icons = {
+  Certification: AwardIcon,
+  Training: GraduationCapIcon,
+  Workshop: UsersIcon,
+  Conference: PresentationIcon,
+  Award: AwardIcon,
+} as const;
+
+/** Day precision only when the source date had a day (YYYY-MM-DD). */
+const when = (d: Date, end?: Date) => {
+  const fmt = d.getUTCDate() === 1 && !end ? formatMonth : formatDate;
+  return end ? `${fmt(d)} – ${fmt(end)}` : fmt(d);
+};
+---
+
+<PageLayout
+  title="Certifications & Training"
+  eyebrow="Learning"
+  description="Certifications, trainings, workshops and conferences that keep my practice current."
+>
+  {
+    types.length > 1 && (
+      <div class="mb-10 flex flex-wrap gap-2" role="toolbar" aria-label="Filter by type" data-cert-filters>
+        {["All", ...types].map((t, i) => (
+          <button
+            type="button"
+            data-filter={t}
+            aria-pressed={i === 0}
+            class="rounded-full border px-3 py-1 text-sm text-muted-foreground transition-colors hover:text-foreground aria-pressed:border-primary aria-pressed:bg-primary aria-pressed:text-primary-foreground"
+          >
+            {t === "All" ? t : `${t}s`}
+          </button>
+        ))}
+      </div>
+    )
+  }
+
+  <ul class="grid gap-6 md:grid-cols-2" data-reveal-stagger>
+    {
+      certs.map(({ data }) => {
+        const Icon = icons[data.type];
+        return (
+          <li data-type={data.type} class="group flex flex-col rounded-2xl border bg-card p-6 transition-colors hover:border-primary/40">
+            <div class="flex items-start justify-between gap-4">
+              <span class="grid size-12 shrink-0 place-items-center rounded-xl bg-primary/10 text-primary transition-transform duration-500 group-hover:rotate-6">
+                <Icon className="size-6" />
+              </span>
+              <Badge variant="secondary">{data.type}</Badge>
+            </div>
+            <h3 class="mt-5 font-heading text-lg leading-snug font-semibold">{data.title}</h3>
+            <p class="mt-1 text-sm text-primary">{data.issuer}</p>
+            <div class="mt-3 flex flex-wrap gap-x-4 gap-y-1 text-xs text-muted-foreground">
+              <span class="inline-flex items-center gap-1.5"><CalendarIcon className="size-3.5" />{when(data.date, data.endDate)}</span>
+              {data.location && <span class="inline-flex items-center gap-1.5"><MapPinIcon className="size-3.5" />{data.location}</span>}
+            </div>
+            {data.description && <p class="mt-4 text-sm text-muted-foreground">{data.description}</p>}
+            {data.skills.length > 0 && (
+              <div class="mt-4 flex flex-wrap gap-1.5">{data.skills.map((s) => <Badge variant="outline">{s}</Badge>)}</div>
+            )}
+            {(data.credentialUrl || data.file) && (
+              <div class="mt-auto flex flex-wrap gap-4 pt-6 text-sm">
+                {data.credentialUrl && (
+                  <a href={data.credentialUrl} target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-1 font-medium hover:text-primary">
+                    Verify credential <ArrowUpRightIcon className="size-3.5" />
+                  </a>
+                )}
+                {data.file && (
+                  <a href={data.file} target="_blank" class="inline-flex items-center gap-1 font-medium hover:text-primary">
+                    <FileTextIcon className="size-3.5" /> View certificate
+                  </a>
+                )}
+                {data.credentialId && <span class="text-xs text-muted-foreground">ID: {data.credentialId}</span>}
+              </div>
+            )}
+          </li>
+        );
+      })
+    }
+  </ul>
+</PageLayout>
+
+<script>
+  import { gsap, ScrollTrigger } from "@/scripts/motion";
+  const bar = document.querySelector("[data-cert-filters]");
+  const cards = document.querySelectorAll<HTMLElement>("li[data-type]");
+  bar?.addEventListener("click", (e) => {
+    const btn = (e.target as HTMLElement).closest<HTMLButtonElement>("[data-filter]");
+    if (!btn) return;
+    const filter = btn.dataset.filter!;
+    bar.querySelectorAll("[data-filter]").forEach((b) => b.setAttribute("aria-pressed", String(b === btn)));
+    const shown: HTMLElement[] = [];
+    cards.forEach((card) => {
+      const match = filter === "All" || card.dataset.type === filter;
+      card.hidden = !match;
+      if (match) shown.push(card);
+    });
+    gsap.fromTo(shown, { opacity: 0, y: 16 }, { opacity: 1, y: 0, duration: 0.5, stagger: 0.05, ease: "power2.out" });
+    ScrollTrigger.refresh();
+  });
+</script>

@@ -1,0 +1,58 @@
+---
+/** Downloadable files list. File size/type are read from /public at build time. */
+import { DownloadIcon, ExternalLinkIcon, FileIcon, FileSpreadsheetIcon, FileTextIcon, ImageIcon } from "lucide-react";
+import { fileInfo } from "@/lib/format";
+
+export interface AttachmentItem {
+  title: string;
+  file: string;
+  description?: string;
+}
+interface Props {
+  items: AttachmentItem[];
+  title?: string;
+}
+const { items, title = "Files & downloads" } = Astro.props;
+
+const iconFor = (ext: string) =>
+  ["CSV", "XLS", "XLSX"].includes(ext) ? FileSpreadsheetIcon
+  : ["PDF", "DOC", "DOCX", "TXT", "MD"].includes(ext) ? FileTextIcon
+  : ["PNG", "JPG", "JPEG", "WEBP", "SVG"].includes(ext) ? ImageIcon
+  : FileIcon;
+
+const files = items.map((a) => ({ ...a, ...fileInfo(a.file), external: /^https?:\/\//.test(a.file) }));
+---
+
+{
+  files.length > 0 && (
+    <section class="not-prose my-12" aria-labelledby="attachments-title">
+      <h2 id="attachments-title" class="mb-6 font-heading text-2xl font-semibold tracking-tight">{title}</h2>
+      <ul class="grid gap-3 sm:grid-cols-2" data-reveal-stagger>
+        {files.map((f) => {
+          const Icon = iconFor(f.ext);
+          return (
+            <li class="group flex items-center gap-4 rounded-xl border bg-card p-4 transition-colors hover:border-primary/40">
+              <span class="grid size-11 shrink-0 place-items-center rounded-lg bg-primary/10 text-primary">
+                <Icon className="size-5" />
+              </span>
+              <div class="min-w-0 flex-1">
+                <p class="truncate font-medium">{f.title}</p>
+                <p class="truncate text-xs text-muted-foreground">
+                  {[f.ext, f.size, f.description].filter(Boolean).join(" · ")}
+                </p>
+              </div>
+              <a
+                href={f.file}
+                {...(f.external ? { target: "_blank", rel: "noopener noreferrer" } : { download: "" })}
+                class="grid size-9 shrink-0 place-items-center rounded-full border transition-colors hover:bg-primary hover:text-primary-foreground"
+                aria-label={`${f.external ? "Open" : "Download"} ${f.title}`}
+              >
+                {f.external ? <ExternalLinkIcon className="size-4" /> : <DownloadIcon className="size-4" />}
+              </a>
+            </li>
+          );
+        })}
+      </ul>
+    </section>
+  )
+}

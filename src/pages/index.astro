@@ -1,0 +1,59 @@
+---
+import BaseLayout from "@/layouts/BaseLayout.astro";
+import Hero from "@/components/landing/Hero.astro";
+import Marquee from "@/components/landing/Marquee.astro";
+import Intro from "@/components/landing/Intro.astro";
+import ExperiencePreview from "@/components/landing/ExperiencePreview.astro";
+import ProjectScroller from "@/components/landing/ProjectScroller.astro";
+import CallToAction from "@/components/landing/CallToAction.astro";
+import SectionHeading from "@/components/common/SectionHeading.astro";
+import EntryGrid from "@/components/content/EntryGrid.astro";
+import { siteConfig } from "@/config/site";
+import { getFeatured, getPublished } from "@/lib/content";
+import { getCertifications, getEmployment, getExperienceMonths } from "@/lib/resume";
+
+const [projects, posts, allProjects, jobs, certs, months] = await Promise.all([
+  getFeatured("projects", 5),
+  getPublished("blog"),
+  getPublished("projects"),
+  getEmployment(),
+  getCertifications(),
+  getExperienceMonths(),
+]);
+
+const stats = [
+  { value: Math.max(1, Math.floor(months / 12)), suffix: "+", label: "Years of experience" },
+  { value: allProjects.length, suffix: "", label: "Projects documented" },
+  { value: new Set(jobs.map((j) => j.data.organization)).size, suffix: "", label: "Organisations" },
+  { value: certs.length, suffix: "", label: "Trainings & workshops" },
+];
+---
+
+<BaseLayout>
+  <Hero
+    headline="Engineering *resilient* farms with water, energy & data."
+    intro={`I'm ${siteConfig.shortName}, an agricultural engineer in ${siteConfig.location} designing irrigation, renewable-energy and climate-smart systems that help farmers do more with less.`}
+  />
+
+  <Marquee items={siteConfig.skills} />
+
+  <Intro
+    statement="I bridge engineering and agriculture: designing drip and sprinkler networks, polyhouses and solar dryers, running field research, and turning data into practical decisions for farming communities across Nepal."
+    stats={stats}
+  />
+
+  <ExperiencePreview jobs={jobs.filter((j) => j.data.type !== "Leadership").slice(0, 3)} />
+
+  <ProjectScroller projects={projects} />
+
+  <section class="container-page py-24 md:py-32">
+    <SectionHeading eyebrow="Writing" title="Latest from the blog" href="/blog" linkLabel="All posts" />
+    <EntryGrid entries={posts.slice(0, 3)} collection="blog" columns={3} />
+  </section>
+
+  <CallToAction />
+</BaseLayout>
+
+<script>
+  import "@/scripts/landing";
+</script>

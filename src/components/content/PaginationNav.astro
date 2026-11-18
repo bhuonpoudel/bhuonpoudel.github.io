@@ -1,0 +1,60 @@
+---
+/** Static pagination built from shadcn/ui Pagination (rendered server-side, no JS). */
+import type { Page } from "astro";
+import {
+  Pagination,
+  PaginationContent,
+  PaginationEllipsis,
+  PaginationItem,
+  PaginationLink,
+  PaginationNext,
+  PaginationPrevious,
+} from "@/components/ui/pagination";
+import { pageHref, pageWindow } from "@/lib/pagination";
+
+interface Props {
+  page: Pick<Page, "currentPage" | "lastPage" | "url">;
+  /** Base path of page 1, e.g. "/blog" or "/blog/tag/irrigation". */
+  basePath: string;
+}
+
+const { page, basePath } = Astro.props;
+const { currentPage, lastPage } = page;
+const tokens = pageWindow(currentPage, lastPage);
+---
+
+{
+  lastPage > 1 && (
+    <Pagination className="mt-12">
+      <PaginationContent>
+        <PaginationItem>
+          <PaginationPrevious
+            href={page.url.prev ?? undefined}
+            aria-disabled={!page.url.prev}
+            className={!page.url.prev ? "pointer-events-none opacity-40" : undefined}
+          />
+        </PaginationItem>
+        {tokens.map((t) =>
+          t === "ellipsis" ? (
+            <PaginationItem>
+              <PaginationEllipsis />
+            </PaginationItem>
+          ) : (
+            <PaginationItem>
+              <PaginationLink href={pageHref(basePath, t)} isActive={t === currentPage}>
+                {t}
+              </PaginationLink>
+            </PaginationItem>
+          ),
+        )}
+        <PaginationItem>
+          <PaginationNext
+            href={page.url.next ?? undefined}
+            aria-disabled={!page.url.next}
+            className={!page.url.next ? "pointer-events-none opacity-40" : undefined}
+          />
+        </PaginationItem>
+      </PaginationContent>
+    </Pagination>
+  )
+}

@@ -1,0 +1,24 @@
+---
+/**
+ * Blocking inline script: applies the saved mode + palette before first paint
+ * (prevents a flash of the wrong theme) and flags that JS motion is enabled.
+ */
+import { themeDefaults } from "@/config/theme";
+const { storageKeys, mode, palette } = themeDefaults;
+---
+
+<script is:inline define:vars={{ storageKeys, mode, palette }}>
+  const root = document.documentElement;
+  const get = (key, fallback) => {
+    try { return localStorage.getItem(key) || fallback; } catch { return fallback; }
+  };
+  const m = get(storageKeys.mode, mode);
+  const dark = m === "dark" || (m === "system" && matchMedia("(prefers-color-scheme: dark)").matches);
+  root.classList.toggle("dark", dark);
+  root.dataset.palette = get(storageKeys.palette, palette);
+  if (!matchMedia("(prefers-reduced-motion: reduce)").matches) {
+    root.classList.add("js-motion");
+    // safety net: never leave [data-reveal] content hidden if the motion bundle fails
+    setTimeout(() => { if (!window.__motionReady) root.classList.remove("js-motion"); }, 2500);
+  }
+</script>

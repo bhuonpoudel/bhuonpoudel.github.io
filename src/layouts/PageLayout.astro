@@ -1,0 +1,23 @@
+---
+/** Inner-page layout: BaseLayout + PageHeader + padded content container. */
+import BaseLayout, { type Props as BaseProps } from "./BaseLayout.astro";
+import PageHeader from "@/components/common/PageHeader.astro";
+
+export interface Props extends BaseProps {
+  title: string;
+  eyebrow?: string;
+  /** Wider content area (grids) vs. narrow reading column. */
+  width?: "default" | "narrow";
+}
+
+const { title, eyebrow, description, width = "default", ...rest } = Astro.props;
+---
+
+<BaseLayout title={title} description={description} {...rest}>
+  <PageHeader eyebrow={eyebrow} title={title} description={description}>
+    <slot name="header" />
+  </PageHeader>
+  <div class:list={["container-page py-12 md:py-16", width === "narrow" && "max-w-3xl"]}>
+    <slot />
+  </div>
+</BaseLayout>

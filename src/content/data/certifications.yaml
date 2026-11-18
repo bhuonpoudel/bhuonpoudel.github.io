@@ -1,0 +1,20 @@
+# Certifications, trainings, workshops and conferences.
+# Optional: credentialUrl, credentialId, file (path in /public to a certificate scan).
+- id: icimod-undp-workshop-2024
+  title: "Stakeholder Consultation Workshop: Climate Resilient and Inclusive Agriculture in Nepal: Approaches and Partnership"
+  issuer: ICIMOD & UNDP
+  type: Workshop
+  date: "2024-08"
+  description: Shared field data and insights that contributed to draft technical reports and discussions on sustainable agriculture.
+  skills: [Climate Resilience, Inclusive Agriculture]
+
+- id: fao-millet-value-chain-2024
+  title: Training on Millet Value Chain Promotion
+  issuer: FAO Nepal
+  type: Training
+  date: "2024-03-29"
+  endDate: "2024-03-30"
+  location: Chitwan, Nepal
+  description: Attended as a representative of the World Food Forum Nepal; brainstormed value-added millet products and strategies to promote millet.
+  skills: [Value Chains, Food Systems]
+

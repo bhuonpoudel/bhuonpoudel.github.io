@@ -1,0 +1,63 @@
+---
+/**
+ * Complete listing page for any long-form collection: header, search shortcut,
+ * tag filter, grid and pagination. Used by /blog, /projects and their tag routes.
+ */
+import type { Page } from "astro";
+import { SearchIcon } from "lucide-react";
+import PageLayout from "@/layouts/PageLayout.astro";
+import EntryGrid from "./EntryGrid.astro";
+import TagFilter from "./TagFilter.astro";
+import PaginationNav from "./PaginationNav.astro";
+import { collectionMeta, type Entry, type EntryCollection, type TagCount } from "@/lib/content";
+
+interface Props {
+  collection: EntryCollection;
+  page: Page<Entry>;
+  tags: TagCount[];
+  total: number;
+  activeTag?: TagCount;
+}
+
+const { collection, page, tags, total, activeTag } = Astro.props;
+const meta = collectionMeta[collection];
+const basePath = activeTag ? `${meta.basePath}/tag/${activeTag.slug}` : meta.basePath;
+
+const title = activeTag ? `${meta.label}: ${activeTag.name}` : meta.label;
+const pageSuffix = page.currentPage > 1 ? ` (Page ${page.currentPage})` : "";
+---
+
+<PageLayout
+  title={title + pageSuffix}
+  eyebrow={activeTag ? `Filtered · ${page.total} ${page.total === 1 ? meta.singular.toLowerCase() : meta.label.toLowerCase()}` : meta.label}
+  description={meta.description}
+>
+  <button
+    slot="header"
+    type="button"
+    data-open-search
+    class="mt-8 flex w-full max-w-md items-center gap-3 rounded-full border bg-background/70 px-4 py-2.5 text-left text-sm text-muted-foreground backdrop-blur transition-colors hover:border-primary/40"
+  >
+    <SearchIcon className="size-4" />
+    <span class="flex-1">Search {meta.label.toLowerCase()}…</span>
+    <kbd class="rounded-full border bg-muted px-2 py-0.5 font-mono text-[10px]">/</kbd>
+  </button>
+
+  <div class="mb-10">
+    <TagFilter tags={tags} basePath={meta.basePath} activeSlug={activeTag?.slug} total={total} />
+  </div>
+
+  {
+    page.data.length ? (
+      <EntryGrid entries={page.data} collection={collection} />
+    ) : (
+      <p class="rounded-xl border border-dashed p-12 text-center text-muted-foreground">Nothing here yet.</p>
+    )
+  }
+
+  <PaginationNav page={page} basePath={basePath} />
+
+  <p class="mt-6 text-center text-xs text-muted-foreground">
+    Showing {page.start + 1}–{page.end + 1} of {page.total}
+  </p>
+</PageLayout>

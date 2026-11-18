@@ -1,0 +1,201 @@
+---
+/**
+ * Detail page for any long-form entry (blog post or project):
+ * hero + cover, sticky TOC, MDX body, gallery, attachments, prev/next.
+ * Collection-specific details are passed in as `facts` / `links`.
+ */
+import { Image } from "astro:assets";
+import { render } from "astro:content";
+import { ArrowLeftIcon, ArrowRightIcon, ArrowUpRightIcon, CalendarIcon, ClockIcon, RefreshCwIcon } from "lucide-react";
+import BaseLayout from "./BaseLayout.astro";
+import TableOfContents from "@/components/content/TableOfContents.astro";
+import Gallery from "@/components/content/Gallery.astro";
+import Attachments from "@/components/content/Attachments.astro";
+import { mdxComponents } from "@/components/mdx";
+import { badgeClass } from "@/lib/variants";
+import { collectionMeta, entryHref, readingTime, tagHref, type Entry, type EntryCollection } from "@/lib/content";
+import { formatDate } from "@/lib/format";
+
+export interface Fact {
+  label: string;
+  value: string;
+}
+interface Props {
+  entry: Entry;
+  collection: EntryCollection;
+  newer?: Entry | null;
+  older?: Entry | null;
+  facts?: Fact[];
+  links?: { label: string; href: string }[];
+}
+
+const { entry, collection, newer, older, facts = [], links = [] } = Astro.props;
+const { data } = entry;
+const { Content, headings } = await render(entry);
+const meta = collectionMeta[collection];
+const showToc = data.toc && headings.some((h) => h.depth === 2 || h.depth === 3);
+const pagefindType = collection === "blog" ? "Blog" : "Project";
+---
+
+<BaseLayout
+  title={data.title}
+  description={data.description}
+  image={data.cover}
+  type="article"
+  publishedTime={data.pubDate}
+>
+  <article data-article data-pagefind-body data-pagefind-filter={`type:${pagefindType}`}>
+    <!-- Hero -->
+    <header class="container-page pt-10 md:pt-16">
+      <a
+        href={meta.basePath}
+        data-reveal="fade"
+        data-pagefind-ignore
+        class="group inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground"
+      >
+        <ArrowLeftIcon className="size-4 transition-transform group-hover:-translate-x-1" />
+        All {meta.label.toLowerCase()}
+      </a>
+
+      <div class="mt-8 max-w-4xl">
+        <div data-reveal="fade" class="mb-5 flex flex-wrap gap-2" data-pagefind-ignore>
+          {data.tags.map((tag) => (
+            <a href={tagHref(collection, tag)} class={badgeClass({ variant: "outline" })}>{tag}</a>
+          ))}
+        </div>
+        <h1 data-reveal class="font-display text-4xl leading-[1.05] tracking-tight text-balance sm:text-5xl md:text-7xl">
+          {data.title}
+        </h1>
+        <p data-reveal data-reveal-delay="0.1" class="mt-6 max-w-2xl text-lg text-muted-foreground text-pretty">
+          {data.description}
+        </p>
+        <div data-reveal data-reveal-delay="0.15" data-pagefind-ignore class="mt-6 flex flex-wrap gap-x-5 gap-y-2 text-sm text-muted-foreground">
+          <span class="inline-flex items-center gap-1.5"><CalendarIcon className="size-4" />{formatDate(data.pubDate)}</span>
+          {data.updatedDate && <span class="inline-flex items-center gap-1.5"><RefreshCwIcon className="size-4" />Updated {formatDate(data.updatedDate)}</span>}
+          <span class="inline-flex items-center gap-1.5"><ClockIcon className="size-4" />{readingTime(entry.body)} min read</span>
+        </div>
+      </div>
+
+      {
+        data.cover && (
+          <div data-reveal="scale" data-reveal-delay="0.2" class="mt-10 overflow-hidden rounded-3xl ring-1 ring-foreground/10 md:mt-14">
+            <Image
+              src={data.cover}
+              alt={data.coverAlt || data.title}
+              widths={[640, 1024, 1600, 2000]}
+              sizes="(min-width: 1152px) 1152px, 100vw"
+              loading="eager"
+              fetchpriority="high"
+              data-cover-parallax
+              data-pagefind-meta="image[src], image_alt[alt]"
+              class="aspect-[16/9] w-full scale-110 object-cover will-change-transform"
+            />
+          </div>
+        )
+      }
+    </header>
+
+    <!-- Body -->
+    <div class="container-page mt-12 grid gap-12 md:mt-16 lg:grid-cols-[minmax(0,1fr)_16rem]">
+      <div class="min-w-0">
+        {showToc && <div class="mb-8" data-pagefind-ignore><TableOfContents headings={headings} variant="inline" /></div>}
+
+        <div>
+          {data.tags.map((tag) => <span data-pagefind-filter={`tag:${tag}`} />)}
+
+          <div class="prose prose-themed max-w-none md:prose-lg prose-headings:font-heading prose-headings:tracking-tight prose-h2:mt-14">
+            <Content components={mdxComponents} />
+          </div>
+
+          <Gallery images={data.gallery} title="Gallery" />
+          <Attachments items={data.attachments} />
+        </div>
+      </div>
+
+      <aside class="hidden lg:block" data-pagefind-ignore>
+        <div class="sticky top-24 space-y-8">
+          {
+            facts.length > 0 && (
+              <dl class="space-y-3 rounded-2xl border bg-card p-5 text-sm">
+                {facts.map((f) => (
+                  <div>
+                    <dt class="text-xs text-muted-foreground">{f.label}</dt>
+                    <dd class="font-medium capitalize">{f.value}</dd>
+                  </div>
+                ))}
+              </dl>
+            )
+          }
+          {
+            links.length > 0 && (
+              <div class="flex flex-col gap-2">
+                {links.map((l) => (
+                  <a href={l.href} target="_blank" rel="noopener noreferrer" class="group flex items-center justify-between rounded-xl border px-4 py-2.5 text-sm hover:border-primary/50">
+                    {l.label}
+                    <ArrowUpRightIcon className="size-4 transition-transform group-hover:-translate-y-0.5 group-hover:translate-x-0.5" />
+                  </a>
+                ))}
+              </div>
+            )
+          }
+          {showToc && <TableOfContents headings={headings} />}
+        </div>
+      </aside>
+    </div>
+
+    <!-- Mobile facts -->
+    {
+      (facts.length > 0 || links.length > 0) && (
+        <div class="container-page mt-10 lg:hidden" data-pagefind-ignore>
+          <dl class="grid grid-cols-2 gap-4 rounded-2xl border bg-card p-5 text-sm">
+            {facts.map((f) => (
+              <div>
+                <dt class="text-xs text-muted-foreground">{f.label}</dt>
+                <dd class="font-medium capitalize">{f.value}</dd>
+              </div>
+            ))}
+          </dl>
+          <div class="mt-3 flex flex-wrap gap-2">
+            {links.map((l) => (
+              <a href={l.href} target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-1 rounded-full border px-3 py-1.5 text-sm">
+                {l.label} <ArrowUpRightIcon className="size-3.5" />
+              </a>
+            ))}
+          </div>
+        </div>
+      )
+    }
+
+    <!-- Prev / next -->
+    <nav data-pagefind-ignore class="container-page mt-20 grid gap-4 border-t pt-10 sm:grid-cols-2" aria-label={`More ${meta.label.toLowerCase()}`}>
+      {
+        older ? (
+          <a href={entryHref(collection, older.id)} class="group rounded-2xl border p-5 transition-colors hover:border-primary/50">
+            <span class="inline-flex items-center gap-1.5 text-xs text-muted-foreground"><ArrowLeftIcon className="size-3.5 transition-transform group-hover:-translate-x-1" /> Previous</span>
+            <span class="mt-2 block font-medium">{older.data.title}</span>
+          </a>
+        ) : <span />
+      }
+      {
+        newer && (
+          <a href={entryHref(collection, newer.id)} class="group rounded-2xl border p-5 text-right transition-colors hover:border-primary/50 sm:col-start-2">
+            <span class="inline-flex items-center gap-1.5 text-xs text-muted-foreground">Next <ArrowRightIcon className="size-3.5 transition-transform group-hover:translate-x-1" /></span>
+            <span class="mt-2 block font-medium">{newer.data.title}</span>
+          </a>
+        )
+      }
+    </nav>
+  </article>
+</BaseLayout>
+
+<script>
+  import { gsap, prefersReducedMotion } from "@/scripts/motion";
+  const cover = document.querySelector<HTMLElement>("[data-cover-parallax]");
+  if (cover && !prefersReducedMotion()) {
+    gsap.fromTo(
+      cover,
+      { yPercent: -5 },
+      { yPercent: 5, ease: "none", scrollTrigger: { trigger: cover, start: "top bottom", end: "bottom top", scrub: true } },
+    );
+  }
+</script>

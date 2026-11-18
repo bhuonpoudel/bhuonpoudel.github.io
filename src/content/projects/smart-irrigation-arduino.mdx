@@ -1,0 +1,68 @@
+---
+title: Arduino-equipped Smart Irrigation System
+description: A low-cost prototype that switches a pump on and off from real-time soil-moisture readings, so crops get water only when they need it.
+pubDate: 2023-03-15
+cover: ../../assets/projects/smart-irrigation-arduino/cover.jpg
+coverAlt: Abstract illustration of water droplets over blue gradient
+tags: [Irrigation, IoT, Arduino]
+featured: true
+status: completed
+role: Designer & builder
+client: Academic project, IOE Purwanchal Campus
+startDate: 2022-12-01
+endDate: 2023-03-15
+gallery:
+  - src: ../../assets/projects/smart-irrigation-arduino/gallery-1.jpg
+    alt: Prototype on the bench
+    caption: "Bench prototype: Arduino Uno, relay board and capacitive sensor."
+  - src: ../../assets/projects/smart-irrigation-arduino/gallery-2.jpg
+    alt: Sensor installed in a pot
+  - src: ../../assets/projects/smart-irrigation-arduino/gallery-3.jpg
+    alt: Pump and tubing
+attachments:
+  - title: Wiring notes
+    file: /files/projects/smart-irrigation-wiring.pdf
+    description: Pin map and safety notes
+  - title: Arduino sketch
+    file: /files/projects/smart-irrigation.ino
+    description: Reference firmware with hysteresis
+---
+
+Over-irrigation wastes water and energy, while under-irrigation stresses crops. This project explored how a **sub-$30 microcontroller kit** can automate watering decisions for small plots and nurseries.
+
+## How it works
+
+A capacitive soil-moisture sensor is read every few seconds. When moisture falls below a lower threshold the Arduino energises a relay that runs a 12 V pump; once moisture rises above an upper threshold the pump stops.
+
+### Why hysteresis?
+
+Using two thresholds (start and stop) instead of one prevents the pump from rapidly cycling on and off around a single set-point, which protects the relay and the pump.
+
+```cpp
+if (!pumpOn && m < START_BELOW) pumpOn = true;
+if (pumpOn && m > STOP_ABOVE)  pumpOn = false;
+digitalWrite(RELAY_PIN, pumpOn ? LOW : HIGH);
+```
+
+## Hardware
+
+| Component | Purpose |
+| --- | --- |
+| Arduino Uno | Reads sensor, controls relay |
+| Capacitive soil sensor | Corrosion-resistant moisture sensing |
+| 5 V relay module | Switches the pump circuit |
+| 12 V DC pump | Delivers water through drip line |
+
+## Calibration
+
+Sensor readings differ between soils, so the dry and wet reference values must be measured on site. The wiring notes below describe the procedure.
+
+<Callout type="warning" title="Electrical safety">
+Keep mains-powered pumps away from hobby relays unless they are rated and enclosed correctly. The prototype uses a 12 V DC pump for this reason.
+</Callout>
+
+## Next steps
+
+- Add a DHT11/DHT22 sensor and use evapotranspiration estimates.
+- Log readings to an SD card or send them over GSM/LoRa.
+- Power the system with a small solar panel and battery.

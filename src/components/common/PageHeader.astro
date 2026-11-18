@@ -1,0 +1,21 @@
+---
+/** Consistent page intro used by every inner page. */
+interface Props {
+  eyebrow?: string;
+  title: string;
+  description?: string;
+  class?: string;
+}
+const { eyebrow, title, description, class: className } = Astro.props;
+---
+
+<section class:list={["relative overflow-hidden border-b", className]}>
+  <div class="bg-grid pointer-events-none absolute inset-0 [mask-image:radial-gradient(ellipse_at_top,black,transparent_70%)]" aria-hidden="true"></div>
+  <div class="pointer-events-none absolute -top-40 left-1/2 size-[36rem] -translate-x-1/2 rounded-full bg-primary/10 blur-3xl" aria-hidden="true"></div>
+  <div class="container-page relative py-16 md:py-24">
+    {eyebrow && <p data-reveal="fade" class="mb-4 text-xs font-medium tracking-[0.2em] text-primary uppercase">{eyebrow}</p>}
+    <h1 data-reveal class="max-w-3xl font-display text-5xl leading-[1.05] tracking-tight md:text-7xl">{title}</h1>
+    {description && <p data-reveal data-reveal-delay="0.1" class="mt-6 max-w-2xl text-lg text-muted-foreground">{description}</p>}
+    <div data-reveal data-reveal-delay="0.2"><slot /></div>
+  </div>
+</section>

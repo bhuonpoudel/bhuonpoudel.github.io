@@ -1,0 +1,11 @@
+---
+import type { GetStaticPaths } from "astro";
+import EntryLayout from "@/layouts/EntryLayout.astro";
+import { entryPaths } from "@/lib/content";
+
+export const getStaticPaths = entryPaths("blog") satisfies GetStaticPaths;
+
+const { entry, newer, older } = Astro.props;
+---
+
+<EntryLayout collection="blog" entry={entry} newer={newer} older={older} />

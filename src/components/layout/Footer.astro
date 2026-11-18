@@ -1,0 +1,51 @@
+---
+import { siteConfig } from "@/config/site";
+import SocialIcon from "@/components/common/SocialIcon.astro";
+import Logo from "./Logo.astro";
+
+const year = new Date().getFullYear();
+---
+
+<footer class="mt-24 border-t">
+  <div class="container-page grid gap-10 py-12 md:grid-cols-[1.5fr_1fr_1fr]">
+    <div class="space-y-4">
+      <Logo />
+      <p class="max-w-sm text-sm text-muted-foreground">{siteConfig.tagline}</p>
+      <div class="flex gap-1">
+        {
+          siteConfig.socials.map((s) => (
+            <a
+              href={s.href}
+              aria-label={s.label}
+              target={s.href.startsWith("http") ? "_blank" : undefined}
+              rel="noopener noreferrer"
+              class="grid size-9 place-items-center rounded-full text-muted-foreground transition-colors hover:bg-accent hover:text-foreground"
+            >
+              <SocialIcon icon={s.icon} />
+            </a>
+          ))
+        }
+      </div>
+    </div>
+
+    <nav aria-label="Footer">
+      <p class="mb-3 text-xs font-medium tracking-wider text-muted-foreground uppercase">Explore</p>
+      <ul class="grid grid-cols-2 gap-2 text-sm md:grid-cols-1">
+        {siteConfig.nav.map((item) => <li><a href={item.href} class="hover:text-primary">{item.label}</a></li>)}
+      </ul>
+    </nav>
+
+    <div>
+      <p class="mb-3 text-xs font-medium tracking-wider text-muted-foreground uppercase">Get in touch</p>
+      <ul class="space-y-2 text-sm">
+        <li><a href={`mailto:${siteConfig.email}`} class="break-all hover:text-primary">{siteConfig.email}</a></li>
+        <li class="text-muted-foreground">{siteConfig.location}</li>
+        <li><a href="/rss.xml" class="hover:text-primary">RSS feed</a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="container-page flex flex-col gap-2 border-t py-6 text-xs text-muted-foreground sm:flex-row sm:justify-between">
+    <p>© {year} {siteConfig.name}. All rights reserved.</p>
+    <p>Built with Astro, shadcn/ui &amp; Tailwind CSS.</p>
+  </div>
+</footer>

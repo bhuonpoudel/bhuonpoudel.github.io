@@ -1,0 +1,11 @@
+---
+import type { GetStaticPaths } from "astro";
+import CollectionListing from "@/components/content/CollectionListing.astro";
+import { tagListingPaths } from "@/lib/content";
+
+export const getStaticPaths = tagListingPaths("blog") satisfies GetStaticPaths;
+
+const { page, tags, total, activeTag } = Astro.props;
+---
+
+<CollectionListing collection="blog" page={page} tags={tags} total={total} activeTag={activeTag} />

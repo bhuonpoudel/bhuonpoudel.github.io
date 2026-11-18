@@ -1,0 +1,76 @@
+---
+/** Card for any long-form entry (blog post or project). */
+import { Image } from "astro:assets";
+import { ArrowUpRightIcon, CalendarIcon, ClockIcon } from "lucide-react";
+import { Badge } from "@/components/ui/badge";
+import { entryHref, readingTime, type Entry, type EntryCollection } from "@/lib/content";
+import { formatDate } from "@/lib/format";
+
+interface Props {
+  entry: Entry;
+  collection: EntryCollection;
+  /** "feature" = larger horizontal card for highlights. */
+  variant?: "default" | "feature";
+  eager?: boolean;
+}
+
+const { entry, collection, variant = "default", eager = false } = Astro.props;
+const { data } = entry;
+const href = entryHref(collection, entry.id);
+const status = "status" in data ? (data.status as string) : undefined;
+const feature = variant === "feature";
+---
+
+<article
+  class:list={[
+    "group relative flex overflow-hidden rounded-2xl border bg-card transition-all duration-500 hover:-translate-y-1 hover:border-primary/40 hover:shadow-xl hover:shadow-primary/5",
+    feature ? "flex-col md:flex-row" : "flex-col",
+  ]}
+>
+  <div class:list={["relative overflow-hidden bg-muted", feature ? "aspect-[16/10] md:aspect-auto md:w-1/2" : "aspect-[16/10]"]}>
+    {
+      data.cover && (
+        <Image
+          src={data.cover}
+          alt={data.coverAlt || data.title}
+          widths={[400, 640, 960]}
+          sizes={feature ? "(min-width: 768px) 50vw, 100vw" : "(min-width: 1024px) 33vw, (min-width: 640px) 50vw, 100vw"}
+          loading={eager ? "eager" : "lazy"}
+          class="h-full w-full object-cover transition-transform duration-700 ease-out group-hover:scale-105"
+        />
+      )
+    }
+    {
+      status && (
+        <span class="absolute top-3 left-3 rounded-full bg-background/80 px-2.5 py-1 text-[11px] font-medium capitalize backdrop-blur">
+          <span class:list={["mr-1.5 inline-block size-1.5 rounded-full align-middle", status === "ongoing" ? "animate-pulse bg-amber-500" : "bg-primary"]} />
+          {status}
+        </span>
+      )
+    }
+  </div>
+
+  <div class:list={["flex flex-1 flex-col gap-3 p-5", feature && "md:justify-center md:p-8"]}>
+    <div class="flex flex-wrap items-center gap-x-4 gap-y-1 text-xs text-muted-foreground">
+      <span class="inline-flex items-center gap-1.5"><CalendarIcon className="size-3.5" /><time datetime={data.pubDate.toISOString()}>{formatDate(data.pubDate)}</time></span>
+      {collection === "blog" && <span class="inline-flex items-center gap-1.5"><ClockIcon className="size-3.5" />{readingTime(entry.body)} min read</span>}
+    </div>
+    <h3 class:list={["font-heading leading-snug font-semibold tracking-tight", feature ? "text-2xl md:text-3xl" : "text-lg"]}>
+      <a href={href} class="after:absolute after:inset-0 after:content-['']">{data.title}</a>
+    </h3>
+    <p class="line-clamp-3 text-sm text-muted-foreground">{data.description}</p>
+    {
+      data.tags.length > 0 && (
+        <div class="mt-auto flex flex-wrap gap-1.5 pt-2">
+          {data.tags.slice(0, 3).map((tag) => <Badge variant="secondary">{tag}</Badge>)}
+        </div>
+      )
+    }
+  </div>
+  <span
+    class="absolute top-3 right-3 grid size-9 place-items-center rounded-full bg-background/80 opacity-0 backdrop-blur transition-all duration-300 group-hover:opacity-100 group-hover:rotate-45"
+    aria-hidden="true"
+  >
+    <ArrowUpRightIcon className="size-4 -rotate-45" />
+  </span>
+</article>

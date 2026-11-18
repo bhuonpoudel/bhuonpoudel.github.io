@@ -1,0 +1,49 @@
+%PDF-1.4
+1 0 obj
+<< /Type /Catalog /Pages 2 0 R >>
+endobj
+2 0 obj
+<< /Type /Pages /Kids [3 0 R] /Count 1 >>
+endobj
+3 0 obj
+<< /Type /Page /Parent 2 0 R /MediaBox [0 0 595 842] /Contents 4 0 R /Resources << /Font << /F1 5 0 R /F2 6 0 R >> >> >>
+endobj
+4 0 obj
+<< /Length 876 >>
+stream
+BT
+/F2 20 Tf 1 0 0 1 60 780 Tm (Smart Irrigation - Wiring Notes) Tj
+/F1 11 Tf 1 0 0 1 60 750 Tm () Tj
+/F1 11 Tf 1 0 0 1 60 732 Tm (Components: Arduino Uno, capacitive soil-moisture sensor,) Tj
+/F1 11 Tf 1 0 0 1 60 714 Tm (5V single-channel relay, 12V DC pump, 12V supply, diode.) Tj
+/F1 11 Tf 1 0 0 1 60 696 Tm () Tj
+/F1 11 Tf 1 0 0 1 60 678 Tm (Sensor  VCC -> 5V   GND -> GND   AOUT -> A0) Tj
+/F1 11 Tf 1 0 0 1 60 660 Tm (Relay   VCC -> 5V   GND -> GND   IN   -> D7) Tj
+/F1 11 Tf 1 0 0 1 60 642 Tm (Pump    + -> Relay NO, Relay COM -> +12V, - -> supply GND) Tj
+/F1 11 Tf 1 0 0 1 60 624 Tm () Tj
+/F1 11 Tf 1 0 0 1 60 606 Tm (Notes: calibrate DRY/WET readings per soil type; keep the) Tj
+/F1 11 Tf 1 0 0 1 60 588 Tm (sensor electronics above the soil line; use a flyback diode) Tj
+/F1 11 Tf 1 0 0 1 60 570 Tm (across the pump; share GND between Arduino and relay board.) Tj
+ET
+endstream
+endobj
+5 0 obj
+<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica >>
+endobj
+6 0 obj
+<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica-Bold >>
+endobj
+xref
+0 7
+0000000000 65535 f 
+0000000009 00000 n 
+0000000058 00000 n 
+0000000115 00000 n 
+0000000251 00000 n 
+0000001177 00000 n 
+0000001247 00000 n 
+trailer
+<< /Size 7 /Root 1 0 R >>
+startxref
+1322
+%%EOF

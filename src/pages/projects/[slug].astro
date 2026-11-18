@@ -1,0 +1,22 @@
+---
+import type { GetStaticPaths } from "astro";
+import type { CollectionEntry } from "astro:content";
+import EntryLayout, { type Fact } from "@/layouts/EntryLayout.astro";
+import { entryPaths } from "@/lib/content";
+import { formatRange } from "@/lib/format";
+
+export const getStaticPaths = entryPaths("projects") satisfies GetStaticPaths;
+
+const { entry, newer, older } = Astro.props;
+const { data } = entry as CollectionEntry<"projects">;
+
+const facts: Fact[] = [
+  { label: "Status", value: data.status },
+  data.role && { label: "Role", value: data.role },
+  data.client && { label: "Client / Organisation", value: data.client },
+  data.location && { label: "Location", value: data.location },
+  data.startDate && { label: "Timeline", value: formatRange(data.startDate, data.endDate, data.status === "ongoing" ? "Present" : undefined) },
+].filter(Boolean) as Fact[];
+---
+
+<EntryLayout collection="projects" entry={entry} newer={newer} older={older} facts={facts} links={data.links} />

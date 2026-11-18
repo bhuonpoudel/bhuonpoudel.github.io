@@ -1,0 +1,102 @@
+---
+/**
+ * Table of contents from rendered headings (h2/h3) with scroll-spy.
+ * Renders as a sticky sidebar on desktop and a collapsible block on mobile.
+ */
+import type { MarkdownHeading } from "astro";
+import { ListIcon, ChevronDownIcon } from "lucide-react";
+
+interface Props {
+  headings: MarkdownHeading[];
+  variant?: "sidebar" | "inline";
+  minDepth?: number;
+  maxDepth?: number;
+}
+const { headings, variant = "sidebar", minDepth = 2, maxDepth = 3 } = Astro.props;
+const items = headings.filter((h) => h.depth >= minDepth && h.depth <= maxDepth);
+---
+
+{
+  items.length > 0 &&
+    (variant === "inline" ? (
+      <details class="group rounded-xl border bg-card p-4 lg:hidden" data-toc>
+        <summary class="flex cursor-pointer list-none items-center justify-between text-sm font-medium">
+          <span class="inline-flex items-center gap-2"><ListIcon className="size-4" /> On this page</span>
+          <ChevronDownIcon className="size-4 transition-transform group-open:rotate-180" />
+        </summary>
+        <ol class="mt-3 space-y-1 border-l text-sm">
+          {items.map((h) => (
+            <li>
+              <a href={`#${h.slug}`} data-toc-link={h.slug} class:list={["-ml-px block border-l border-transparent py-1 text-muted-foreground hover:text-foreground data-[active=true]:border-primary data-[active=true]:text-foreground", h.depth === 3 ? "pl-7" : "pl-4"]}>
+                {h.text}
+              </a>
+            </li>
+          ))}
+        </ol>
+      </details>
+    ) : (
+      <nav aria-label="Table of contents" class="text-sm" data-toc>
+        <p class="mb-3 inline-flex items-center gap-2 text-xs font-medium tracking-wider text-muted-foreground uppercase">
+          <ListIcon className="size-3.5" /> On this page
+        </p>
+        <ol class="relative space-y-0.5 border-l">
+          {items.map((h) => (
+            <li>
+              <a
+                href={`#${h.slug}`}
+                data-toc-link={h.slug}
+                class:list={[
+                  "-ml-px block border-l border-transparent py-1 leading-snug text-muted-foreground transition-colors hover:text-foreground data-[active=true]:border-primary data-[active=true]:font-medium data-[active=true]:text-foreground",
+                  h.depth === 3 ? "pl-7 text-[13px]" : "pl-4",
+                ]}
+              >
+                {h.text}
+              </a>
+            </li>
+          ))}
+        </ol>
+        <div class="mt-6 h-1 overflow-hidden rounded-full bg-muted" aria-hidden="true">
+          <div class="h-full origin-left scale-x-0 bg-primary" data-read-progress />
+        </div>
+      </nav>
+    ))
+}
+
+<script>
+  function initToc() {
+    const links = document.querySelectorAll<HTMLAnchorElement>("[data-toc-link]");
+    if (!links.length) return;
+    const ids = [...new Set([...links].map((l) => l.dataset.tocLink!))];
+    const headings = ids.map((id) => document.getElementById(id)).filter(Boolean) as HTMLElement[];
+
+    let activeId: string | undefined;
+    const setActive = (id: string) => {
+      if (id === activeId) return;
+      activeId = id;
+      links.forEach((l) => l.setAttribute("data-active", String(l.dataset.tocLink === id)));
+    };
+
+    // The active heading is the last one whose top has scrolled past 30% of the viewport.
+    const progress = document.querySelector<HTMLElement>("[data-read-progress]");
+    const article = document.querySelector<HTMLElement>("[data-article]");
+    const onScroll = () => {
+      const line = window.innerHeight * 0.3;
+      let current = headings[0]?.id;
+      for (const h of headings) if (h.getBoundingClientRect().top <= line) current = h.id;
+      if (current) setActive(current);
+      if (progress && article) {
+        const r = article.getBoundingClientRect();
+        const p = Math.min(1, Math.max(0, -r.top / (r.height - window.innerHeight)));
+        progress.style.transform = `scaleX(${p})`;
+      }
+    };
+    onScroll();
+    window.addEventListener("scroll", onScroll, { passive: true });
+
+    // Close the mobile <details> after picking a section
+    document.querySelectorAll("details[data-toc] a").forEach((a) =>
+      a.addEventListener("click", () => a.closest("details")?.removeAttribute("open")),
+    );
+  }
+  initToc();
+</script>

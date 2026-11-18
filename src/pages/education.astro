@@ -1,0 +1,64 @@
+---
+import { getEntries } from "astro:content";
+import PageLayout from "@/layouts/PageLayout.astro";
+import Timeline from "@/components/resume/Timeline.astro";
+import TimelineItem from "@/components/resume/TimelineItem.astro";
+import EntryCard from "@/components/content/EntryCard.astro";
+import SectionHeading from "@/components/common/SectionHeading.astro";
+import { getEducation } from "@/lib/resume";
+import { formatMonth, formatRange } from "@/lib/format";
+import { siteConfig } from "@/config/site";
+
+const education = await Promise.all(
+  (await getEducation()).map(async (e) => ({
+    ...e,
+    // resolve references to the projects collection (drafts filtered out)
+    projects: (await getEntries(e.data.projects)).filter((p) => p && !(import.meta.env.PROD && p.data.draft)),
+  })),
+);
+---
+
+<PageLayout
+  title="Education"
+  eyebrow="Academics"
+  description="Formal training in agricultural engineering with a concentration in renewable energy."
+>
+  <Timeline>
+    {
+      education.map(({ data, projects }) => (
+        <TimelineItem
+          title={data.degree}
+          subtitle={[data.institution, data.campus].filter(Boolean).join(" · ")}
+          logo={data.logo}
+          period={data.start ? formatRange(data.start, data.end) : data.end ? `Graduated ${formatMonth(data.end)}` : ""}
+          location={data.location}
+          badge={data.concentration}
+          summary={data.summary}
+          highlights={data.highlights}
+        >
+          {data.grade && (
+            <p class="mt-4 inline-flex items-baseline gap-2 rounded-lg bg-muted px-3 py-1.5 text-sm">
+              <span class="text-muted-foreground">Result</span>
+              <span class="font-semibold">{data.grade}</span>
+            </p>
+          )}
+          {projects.length > 0 && (
+            <div class="mt-6">
+              <p class="mb-3 text-xs font-medium tracking-wider text-muted-foreground uppercase">Academic projects</p>
+              <div class="grid gap-4 sm:grid-cols-2">
+                {projects.map((p) => <EntryCard entry={p} collection="projects" />)}
+              </div>
+            </div>
+          )}
+        </TimelineItem>
+      ))
+    }
+  </Timeline>
+
+  <section class="mt-24">
+    <SectionHeading eyebrow="Toolkit" title="Technical skills" description="Software and methods I use day to day." />
+    <ul class="flex flex-wrap gap-2" data-reveal-stagger>
+      {siteConfig.skills.map((s) => <li class="rounded-full border bg-card px-4 py-2 text-sm">{s}</li>)}
+    </ul>
+  </section>
+</PageLayout>

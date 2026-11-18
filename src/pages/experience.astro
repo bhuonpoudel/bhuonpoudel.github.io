@@ -1,0 +1,63 @@
+---
+import { DownloadIcon } from "lucide-react";
+import PageLayout from "@/layouts/PageLayout.astro";
+import Timeline from "@/components/resume/Timeline.astro";
+import TimelineItem from "@/components/resume/TimelineItem.astro";
+import SectionHeading from "@/components/common/SectionHeading.astro";
+import { buttonClass } from "@/lib/variants";
+import { siteConfig } from "@/config/site";
+import { getEmployment, getExperienceMonths } from "@/lib/resume";
+import { formatDuration, formatRange } from "@/lib/format";
+
+const all = await getEmployment();
+const work = all.filter((j) => !["Leadership", "Volunteer"].includes(j.data.type));
+const leadership = all.filter((j) => ["Leadership", "Volunteer"].includes(j.data.type));
+const months = await getExperienceMonths();
+const years = Math.max(1, Math.floor(months / 12));
+
+const sections = [
+  { id: "work", title: "Employment", items: work },
+  { id: "leadership", title: "Leadership & activities", items: leadership },
+].filter((s) => s.items.length);
+---
+
+<PageLayout
+  title="Experience"
+  eyebrow="Career"
+  description={`${years}+ years designing irrigation, renewable-energy and climate-smart farming systems across government, research and the field.`}
+>
+  <div slot="header" class="mt-8 flex flex-wrap gap-3">
+    <a href={siteConfig.resume} download class={buttonClass({ size: "lg" })}>
+      <DownloadIcon data-icon="inline-start" /> Download CV
+    </a>
+    <a href="/contact" class={buttonClass({ size: "lg", variant: "outline" })}>Get in touch</a>
+  </div>
+
+  <div class="space-y-24">
+    {
+      sections.map((section) => (
+        <section id={section.id}>
+          <SectionHeading title={section.title} />
+          <Timeline>
+            {section.items.map(({ data }) => (
+              <TimelineItem
+                title={data.role}
+                subtitle={data.organization}
+                href={data.url}
+                logo={data.logo}
+                period={formatRange(data.start, data.end)}
+                duration={formatDuration(data.start, data.end)}
+                location={data.location}
+                badge={data.end ? data.type : "Current"}
+                current={!data.end}
+                summary={data.summary}
+                highlights={data.highlights}
+                tags={data.skills}
+              />
+            ))}
+          </Timeline>
+        </section>
+      ))
+    }
+  </div>
+</PageLayout>

@@ -1,0 +1,27 @@
+---
+interface Props {
+  eyebrow?: string;
+  title: string;
+  description?: string;
+  href?: string;
+  linkLabel?: string;
+  class?: string;
+}
+const { eyebrow, title, description, href, linkLabel = "View all", class: className } = Astro.props;
+---
+
+<div class:list={["mb-10 flex flex-col gap-4 md:flex-row md:items-end md:justify-between", className]}>
+  <div class="max-w-2xl">
+    {eyebrow && <p data-reveal="fade" class="mb-3 text-xs font-medium tracking-[0.2em] text-primary uppercase">{eyebrow}</p>}
+    <h2 data-reveal class="font-display text-4xl leading-tight tracking-tight md:text-5xl">{title}</h2>
+    {description && <p data-reveal class="mt-3 text-muted-foreground">{description}</p>}
+  </div>
+  {
+    href && (
+      <a href={href} data-reveal="fade" class="group inline-flex shrink-0 items-center gap-2 text-sm font-medium hover:text-primary">
+        {linkLabel}
+        <span class="transition-transform group-hover:translate-x-1" aria-hidden="true">→</span>
+      </a>
+    )
+  }
+</div>

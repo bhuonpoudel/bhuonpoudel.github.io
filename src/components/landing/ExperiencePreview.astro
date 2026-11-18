@@ -1,0 +1,45 @@
+---
+import type { CollectionEntry } from "astro:content";
+import { ArrowUpRightIcon } from "lucide-react";
+import { formatRange } from "@/lib/format";
+import { buttonClass } from "@/lib/variants";
+
+interface Props {
+  jobs: CollectionEntry<"employment">[];
+}
+const { jobs } = Astro.props;
+---
+
+<section class="container-page grid gap-12 py-24 lg:grid-cols-[1fr_1.6fr]">
+  <div class="lg:sticky lg:top-28 lg:self-start">
+    <p class="mb-3 text-xs font-medium tracking-[0.2em] text-primary uppercase" data-reveal="fade">Experience</p>
+    <h2 class="font-display text-4xl leading-tight tracking-tight md:text-6xl" data-reveal>
+      From field surveys to <em class="text-primary">national programmes</em>.
+    </h2>
+    <p class="mt-5 max-w-md text-muted-foreground" data-reveal>
+      Government, research and student leadership roles focused on water, energy and climate-smart agriculture.
+    </p>
+    <a href="/experience" class={buttonClass({ variant: "outline", size: "lg", className: "mt-8 h-11 rounded-full px-6" })} data-reveal>
+      Full experience <ArrowUpRightIcon data-icon="inline-end" />
+    </a>
+  </div>
+
+  <ol class="divide-y border-y" data-reveal-stagger>
+    {
+      jobs.map(({ data }) => (
+        <li>
+          <a href="/experience" class="group grid gap-2 py-7 md:grid-cols-[1fr_auto] md:gap-8">
+            <div class="transition-[translate] duration-500 group-hover:translate-x-4">
+              <p class="text-xs text-muted-foreground">{formatRange(data.start, data.end)}</p>
+              <h3 class="mt-1 text-xl font-medium tracking-tight transition-colors group-hover:text-primary md:text-2xl">{data.role}</h3>
+              <p class="mt-1 text-sm text-muted-foreground">{data.organization}</p>
+            </div>
+            <span class="hidden items-center md:flex">
+              <span class="rounded-full border px-3 py-1 text-xs text-muted-foreground">{data.end ? data.type : "Current"}</span>
+            </span>
+          </a>
+        </li>
+      ))
+    }
+  </ol>
+</section>

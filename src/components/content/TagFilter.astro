@@ -1,0 +1,38 @@
+---
+/** Tag filter chips. Each tag links to its own paginated, static route. */
+import type { TagCount } from "@/lib/content";
+import { cn } from "@/lib/utils";
+
+interface Props {
+  tags: TagCount[];
+  basePath: string;
+  activeSlug?: string;
+  total: number;
+}
+const { tags, basePath, activeSlug, total } = Astro.props;
+
+const chip = (active: boolean) =>
+  cn(
+    "inline-flex items-center gap-1.5 rounded-full border px-3 py-1 text-sm transition-colors",
+    active
+      ? "border-primary bg-primary text-primary-foreground"
+      : "bg-background text-muted-foreground hover:border-primary/40 hover:text-foreground",
+  );
+---
+
+<nav aria-label="Filter by tag" class="flex flex-wrap gap-2">
+  <a href={basePath} class={chip(!activeSlug)} aria-current={!activeSlug ? "page" : undefined}>
+    All <span class="text-xs opacity-70">{total}</span>
+  </a>
+  {
+    tags.map((tag) => (
+      <a
+        href={`${basePath}/tag/${tag.slug}`}
+        class={chip(tag.slug === activeSlug)}
+        aria-current={tag.slug === activeSlug ? "page" : undefined}
+      >
+        {tag.name} <span class="text-xs opacity-70">{tag.count}</span>
+      </a>
+    ))
+  }
+</nav>

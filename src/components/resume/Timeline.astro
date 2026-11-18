@@ -1,0 +1,11 @@
+---
+/** Vertical timeline wrapper. Children should be <TimelineItem />s. */
+interface Props {
+  class?: string;
+}
+const { class: className } = Astro.props;
+---
+
+<ol class:list={["relative space-y-12 before:absolute before:top-2 before:bottom-2 before:left-[7px] before:w-px before:bg-border md:before:left-[calc(12rem+7px)]", className]} data-timeline>
+  <slot />
+</ol>

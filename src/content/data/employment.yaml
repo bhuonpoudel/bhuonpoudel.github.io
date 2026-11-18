@@ -1,0 +1,62 @@
+# Work history & leadership. Omit `end` for a current role.
+- id: ado-chitwan
+  organization: Agriculture Development Office, Ministry of Agriculture and Livestock Development
+  role: Agricultural Engineer
+  type: Full-time
+  location: Chitwan, Nepal
+  start: "2025-02"
+  summary: Designing farm infrastructure and climate-smart technologies for the Government of Nepal, from irrigation and soil conservation to post-harvest facilities.
+  highlights:
+    - Designing and implementing efficient irrigation systems (drip, sprinkler, canal) to optimise water use.
+    - Conducting soil testing, recommending soil conservation techniques and improving land productivity.
+    - Developing cold storage, solar dryers and value-addition techniques to reduce post-harvest losses.
+    - Promoting climate-smart technologies such as tunnel farming, plastic mulching and agroforestry; designing high-tech nurseries and naturally ventilated polyhouses with detailed estimates.
+    - Conducting training programmes for farmers on improved agricultural engineering practices.
+    - Assisting in policy formulation and research to improve agricultural productivity and sustainability.
+  skills: [Irrigation Design, Estimation & Costing, Post-harvest, Protected Cultivation, Farmer Training]
+
+- id: naxa
+  organization: NAXA Pvt. Ltd.
+  role: Research Officer, Agriculture and Climate Change
+  type: Full-time
+  location: Kathmandu, Nepal
+  start: "2024-05"
+  end: "2024-10"
+  summary: Research on climate-smart, gender-responsive agriculture combining field studies with data analysis.
+  highlights:
+    - Analysed datasets using machine learning and statistical techniques to identify patterns, predict outcomes and provide actionable insights.
+    - Conducted a field study in Bajura for the Renewable Energy for Resilient Agriculture System (RERAS) project and trained farmers on agricultural machinery and resilient farming systems.
+    - Carried out an extensive literature review on climate-smart and gender-responsive technologies in agriculture.
+    - Prepared questionnaires for focus group discussions, key informant interviews and household surveys.
+    - Prepared project methodologies, data analysis frameworks, and technical and scientific reports.
+  skills: [Python, Machine Learning, Survey Design, Field Research, Report Writing]
+
+- id: pmamp
+  organization: Prime Minister Agriculture Modernization Project (PMAMP), Government of Nepal
+  role: Agricultural Engineer (Intern)
+  type: Internship
+  location: Chitwan, Nepal
+  start: "2023-05"
+  end: "2024-07"
+  summary: Technical verification, estimation and documentation for subsidised agricultural infrastructure.
+  highlights:
+    - Learned the subsidy policy of the Government of Nepal.
+    - Performed field inspection and technical verification of ongoing projects.
+    - Estimated and costed farmhouses, shallow tube wells, tunnel houses, high-tech greenhouses and honey-blending machines.
+    - Prepared bills, documentation and technical specifications of farm machinery and equipment.
+  skills: [Estimation & Costing, AutoCAD, Technical Verification]
+
+- id: iaas
+  organization: International Association of Students in Agricultural and Related Sciences (IAAS) Nepal
+  role: Control Board Head
+  type: Leadership
+  location: Chitwan, Nepal
+  start: "2022-08"
+  end: "2023-09"
+  highlights:
+    - Facilitated training on AutoCAD and detailed estimation.
+    - Conducted and presided over the General Assembly for the year.
+    - Organised an international event, the Asia Pacific Directors' Meeting (APDM) 2023.
+    - Supervised and monitored the activities of executive board members.
+    - Delivered a session on "Youth's Role to Mitigate the Effects of Climate Change".
+  skills: [Leadership, Event Management, Training]

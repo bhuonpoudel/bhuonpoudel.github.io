@@ -1,0 +1,62 @@
+/* Map @tailwindcss/typography colours onto the theme tokens so long-form
+ * content follows every palette and light/dark mode automatically. */
+.prose-themed {
+  --tw-prose-body: color-mix(in oklch, var(--foreground) 85%, transparent);
+  --tw-prose-headings: var(--foreground);
+  --tw-prose-lead: var(--muted-foreground);
+  --tw-prose-links: var(--primary);
+  --tw-prose-bold: var(--foreground);
+  --tw-prose-counters: var(--muted-foreground);
+  --tw-prose-bullets: color-mix(in oklch, var(--primary) 60%, transparent);
+  --tw-prose-hr: var(--border);
+  --tw-prose-quotes: var(--foreground);
+  --tw-prose-quote-borders: var(--primary);
+  --tw-prose-captions: var(--muted-foreground);
+  --tw-prose-code: var(--foreground);
+  --tw-prose-pre-code: inherit;
+  --tw-prose-pre-bg: var(--muted);
+  --tw-prose-th-borders: var(--border);
+  --tw-prose-td-borders: var(--border);
+}
+
+.prose-themed :where(a):not(:where([class~="not-prose"] *)) {
+  text-underline-offset: 3px;
+  text-decoration-color: color-mix(in oklch, var(--primary) 40%, transparent);
+  transition: text-decoration-color 0.2s;
+}
+.prose-themed :where(a):not(:where([class~="not-prose"] *)):hover {
+  text-decoration-color: var(--primary);
+}
+
+.prose-themed :where(code):not(:where(pre *, [class~="not-prose"] *)) {
+  background: var(--muted);
+  border: 1px solid var(--border);
+  border-radius: 0.375rem;
+  padding: 0.125rem 0.375rem;
+  font-weight: 500;
+}
+.prose-themed :where(code):not(:where(pre *))::before,
+.prose-themed :where(code):not(:where(pre *))::after {
+  content: none;
+}
+
+.prose-themed :where(pre) {
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+}
+
+.prose-themed :where(img) {
+  border-radius: var(--radius-lg);
+}
+
+/* Shiki dual themes (defaultColor: false in astro.config) */
+.astro-code,
+.astro-code span {
+  color: var(--shiki-light);
+  background-color: var(--shiki-light-bg);
+}
+.dark .astro-code,
+.dark .astro-code span {
+  color: var(--shiki-dark);
+  background-color: var(--shiki-dark-bg);
+}

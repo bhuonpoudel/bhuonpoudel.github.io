@@ -1,0 +1,14 @@
+- id: tu-ioe-purwanchal
+  institution: Tribhuvan University
+  campus: Purwanchal Campus, Institute of Engineering
+  degree: Bachelor of Agricultural Engineering
+  concentration: Renewable Energy
+  location: Dharan, Nepal
+  end: "2023-07"
+  grade: "70.43%"
+  summary: Four-year engineering programme covering soil & water engineering, farm power and machinery, post-harvest engineering and renewable energy systems.
+  highlights:
+    - Concentration in renewable energy for agricultural applications.
+    - Thesis on the sustainability and performance of community biogas plants.
+    - Built an Arduino-based smart irrigation prototype.
+  projects: [community-biogas-evaluation, smart-irrigation-arduino]

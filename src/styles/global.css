@@ -1,0 +1,179 @@
+@import "tailwindcss";
+@import "tw-animate-css";
+@import "shadcn/tailwind.css";
+@import "@fontsource-variable/geist";
+@import "@fontsource-variable/geist-mono";
+@import "@fontsource/instrument-serif/400.css";
+@import "@fontsource/instrument-serif/400-italic.css";
+@import "lenis/dist/lenis.css";
+@import "./prose.css";
+
+@plugin "@tailwindcss/typography";
+
+@custom-variant dark (&:is(.dark *));
+
+@theme inline {
+  --font-sans: "Geist Variable", ui-sans-serif, system-ui, sans-serif;
+  --font-mono: "Geist Mono Variable", ui-monospace, monospace;
+  --font-heading: var(--font-sans);
+  --font-display: "Instrument Serif", ui-serif, Georgia, serif;
+
+  --color-chart-5: var(--chart-5);
+  --color-chart-4: var(--chart-4);
+  --color-chart-3: var(--chart-3);
+  --color-chart-2: var(--chart-2);
+  --color-chart-1: var(--chart-1);
+  --color-ring: var(--ring);
+  --color-input: var(--input);
+  --color-border: var(--border);
+  --color-destructive: var(--destructive);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-accent: var(--accent);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-muted: var(--muted);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-secondary: var(--secondary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-primary: var(--primary);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-popover: var(--popover);
+  --color-card-foreground: var(--card-foreground);
+  --color-card: var(--card);
+  --color-foreground: var(--foreground);
+  --color-background: var(--background);
+  --radius-sm: calc(var(--radius) * 0.6);
+  --radius-md: calc(var(--radius) * 0.8);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) * 1.4);
+  --radius-2xl: calc(var(--radius) * 1.8);
+  --radius-3xl: calc(var(--radius) * 2.2);
+  --radius-4xl: calc(var(--radius) * 2.6);
+
+  --animate-marquee: marquee var(--marquee-duration, 40s) linear infinite;
+  @keyframes marquee {
+    from { transform: translateX(0); }
+    to { transform: translateX(-50%); }
+  }
+}
+
+/* ------------------------------------------------------------------
+ * THEMING
+ * Every colour token is derived from three palette inputs:
+ *   --brand-h  hue, --brand-c  chroma,
+ *   --brand-l  primary lightness (light mode), --brand-l-dark (dark mode)
+ * To add a palette: add a [data-palette="name"] block below and register
+ * it in src/config/theme.ts. Mode (light/dark) is the `.dark` class.
+ * ------------------------------------------------------------------ */
+:root {
+  --brand-h: 152;
+  --brand-c: 0.14;
+  --brand-l: 0.52;
+  --brand-l-dark: 0.76;
+  --radius: 0.75rem;
+
+  --background: oklch(0.99 calc(var(--brand-c) * 0.03) var(--brand-h));
+  --foreground: oklch(0.17 calc(var(--brand-c) * 0.12) var(--brand-h));
+  --card: oklch(1 calc(var(--brand-c) * 0.015) var(--brand-h));
+  --card-foreground: var(--foreground);
+  --popover: var(--card);
+  --popover-foreground: var(--foreground);
+  --primary: oklch(var(--brand-l) var(--brand-c) var(--brand-h));
+  --primary-foreground: oklch(0.985 calc(var(--brand-c) * 0.1) var(--brand-h));
+  --secondary: oklch(0.955 calc(var(--brand-c) * 0.12) var(--brand-h));
+  --secondary-foreground: oklch(0.25 calc(var(--brand-c) * 0.4) var(--brand-h));
+  --muted: oklch(0.96 calc(var(--brand-c) * 0.08) var(--brand-h));
+  --muted-foreground: oklch(0.5 calc(var(--brand-c) * 0.15) var(--brand-h));
+  --accent: oklch(0.94 calc(var(--brand-c) * 0.25) var(--brand-h));
+  --accent-foreground: oklch(0.28 calc(var(--brand-c) * 0.6) var(--brand-h));
+  --destructive: oklch(0.577 0.245 27.325);
+  --border: oklch(0.91 calc(var(--brand-c) * 0.1) var(--brand-h));
+  --input: var(--border);
+  --ring: oklch(var(--brand-l) var(--brand-c) var(--brand-h));
+  --chart-1: oklch(0.65 var(--brand-c) var(--brand-h));
+  --chart-2: oklch(0.6 var(--brand-c) calc(var(--brand-h) + 60));
+  --chart-3: oklch(0.55 var(--brand-c) calc(var(--brand-h) + 120));
+  --chart-4: oklch(0.7 var(--brand-c) calc(var(--brand-h) + 180));
+  --chart-5: oklch(0.6 var(--brand-c) calc(var(--brand-h) + 240));
+  --grid-line: oklch(0.5 calc(var(--brand-c) * 0.2) var(--brand-h) / 0.08);
+}
+
+.dark {
+  --background: oklch(0.15 calc(var(--brand-c) * 0.08) var(--brand-h));
+  --foreground: oklch(0.97 calc(var(--brand-c) * 0.03) var(--brand-h));
+  --card: oklch(0.19 calc(var(--brand-c) * 0.1) var(--brand-h));
+  --primary: oklch(var(--brand-l-dark) var(--brand-c) var(--brand-h));
+  --primary-foreground: oklch(0.17 calc(var(--brand-c) * 0.25) var(--brand-h));
+  --secondary: oklch(0.25 calc(var(--brand-c) * 0.12) var(--brand-h));
+  --secondary-foreground: var(--foreground);
+  --muted: oklch(0.23 calc(var(--brand-c) * 0.1) var(--brand-h));
+  --muted-foreground: oklch(0.71 calc(var(--brand-c) * 0.1) var(--brand-h));
+  --accent: oklch(0.27 calc(var(--brand-c) * 0.25) var(--brand-h));
+  --accent-foreground: oklch(0.95 calc(var(--brand-c) * 0.2) var(--brand-h));
+  --destructive: oklch(0.704 0.191 22.216);
+  --border: oklch(1 0 0 / 10%);
+  --input: oklch(1 0 0 / 15%);
+  --ring: oklch(var(--brand-l-dark) var(--brand-c) var(--brand-h));
+  --grid-line: oklch(1 0 0 / 0.05);
+}
+
+[data-palette="neutral"] { --brand-h: 0; --brand-c: 0; --brand-l: 0.205; --brand-l-dark: 0.92; }
+[data-palette="forest"]  { --brand-h: 152; --brand-c: 0.14; --brand-l: 0.52; --brand-l-dark: 0.76; }
+[data-palette="ocean"]   { --brand-h: 245; --brand-c: 0.15; --brand-l: 0.52; --brand-l-dark: 0.74; }
+[data-palette="sunset"]  { --brand-h: 45; --brand-c: 0.16; --brand-l: 0.56; --brand-l-dark: 0.78; }
+[data-palette="rose"]    { --brand-h: 10; --brand-c: 0.18; --brand-l: 0.55; --brand-l-dark: 0.74; }
+[data-palette="violet"]  { --brand-h: 290; --brand-c: 0.18; --brand-l: 0.5; --brand-l-dark: 0.74; }
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+  html {
+    @apply font-sans antialiased;
+    color-scheme: light;
+  }
+  html.dark {
+    color-scheme: dark;
+  }
+  body {
+    @apply bg-background text-foreground min-h-dvh;
+  }
+  button:not(:disabled),
+  [role="button"]:not(:disabled) {
+    cursor: pointer;
+  }
+  ::selection {
+    background: color-mix(in oklch, var(--primary) 30%, transparent);
+  }
+  :where(h1, h2, h3, h4)[id] {
+    scroll-margin-top: 6rem;
+  }
+}
+
+/* Smooth colour crossfade when switching theme (View Transitions API) */
+::view-transition-old(root),
+::view-transition-new(root) {
+  animation: none;
+  mix-blend-mode: normal;
+}
+
+@utility container-page {
+  @apply mx-auto w-full max-w-6xl px-4 sm:px-6 lg:px-8;
+}
+
+@utility bg-grid {
+  background-image:
+    linear-gradient(to right, var(--grid-line) 1px, transparent 1px),
+    linear-gradient(to bottom, var(--grid-line) 1px, transparent 1px);
+  background-size: 48px 48px;
+}
+
+/* Elements animated with GSAP start hidden only when JS + motion are allowed */
+html.js-motion [data-reveal] {
+  opacity: 0;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html.js-motion [data-reveal] {
+    opacity: 1;
+  }
+}

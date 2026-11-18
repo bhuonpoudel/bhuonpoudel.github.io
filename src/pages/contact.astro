@@ -1,0 +1,53 @@
+---
+import { ClockIcon, MailIcon, MapPinIcon, PhoneIcon } from "lucide-react";
+import PageLayout from "@/layouts/PageLayout.astro";
+import ContactForm from "@/components/contact/ContactForm";
+import SocialIcon from "@/components/common/SocialIcon.astro";
+import { siteConfig } from "@/config/site";
+
+const details = [
+  { icon: MailIcon, label: "Email", value: siteConfig.email, href: `mailto:${siteConfig.email}` },
+  siteConfig.phone && { icon: PhoneIcon, label: "Phone", value: siteConfig.phone, href: `tel:${siteConfig.phone.replace(/\s/g, "")}` },
+  { icon: MapPinIcon, label: "Based in", value: siteConfig.location },
+  { icon: ClockIcon, label: "Availability", value: siteConfig.availability },
+].filter(Boolean) as { icon: typeof MailIcon; label: string; value: string; href?: string }[];
+---
+
+<PageLayout
+  title="Let's talk"
+  eyebrow="Contact"
+  description="Have an irrigation design, a renewable-energy idea or a research collaboration in mind? Send a message. I'd love to hear about it."
+>
+  <div class="grid gap-10 lg:grid-cols-[1fr_1.5fr]">
+    <aside class="space-y-4">
+      <ul class="space-y-3" data-reveal-stagger>
+        {
+          details.map(({ icon: Icon, label, value, href }) => (
+            <li class="flex items-start gap-4 rounded-2xl border bg-card p-5">
+              <span class="grid size-10 shrink-0 place-items-center rounded-xl bg-primary/10 text-primary">
+                <Icon className="size-5" />
+              </span>
+              <div class="min-w-0">
+                <p class="text-xs text-muted-foreground">{label}</p>
+                {href ? <a href={href} class="font-medium break-all hover:text-primary">{value}</a> : <p class="font-medium">{value}</p>}
+              </div>
+            </li>
+          ))
+        }
+      </ul>
+      <div class="flex gap-2 pt-2" data-reveal="fade">
+        {
+          siteConfig.socials.map((s) => (
+            <a href={s.href} aria-label={s.label} target={s.href.startsWith("http") ? "_blank" : undefined} rel="noopener noreferrer" class="grid size-11 place-items-center rounded-full border transition-colors hover:border-primary hover:bg-primary hover:text-primary-foreground">
+              <SocialIcon icon={s.icon} />
+            </a>
+          ))
+        }
+      </div>
+    </aside>
+
+    <div data-reveal>
+      <ContactForm client:visible endpoint={siteConfig.contactFormEndpoint} email={siteConfig.email} />
+    </div>
+  </div>
+</PageLayout>

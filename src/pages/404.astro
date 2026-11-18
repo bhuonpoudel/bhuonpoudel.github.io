@@ -1,0 +1,40 @@
+---
+import { ArrowLeftIcon, SearchIcon } from "lucide-react";
+import BaseLayout from "@/layouts/BaseLayout.astro";
+import { buttonClass } from "@/lib/variants";
+import { siteConfig } from "@/config/site";
+---
+
+<BaseLayout title="Page not found" description="The page you're looking for doesn't exist." noindex>
+  <section class="relative flex min-h-[75dvh] items-center overflow-hidden">
+    <div class="bg-grid pointer-events-none absolute inset-0 [mask-image:radial-gradient(ellipse_at_center,black,transparent_70%)]" aria-hidden="true"></div>
+    <div class="container-page relative text-center">
+      <p class="mb-6 text-xs font-medium tracking-[0.3em] text-primary uppercase" data-reveal="fade">Error 404</p>
+      <h1 class="font-display text-[28vw] leading-none tracking-tighter select-none md:text-[16rem]" aria-label="404">
+        {["4", "0", "4"].map((d) => <span class="inline-block" data-digit>{d}</span>)}
+      </h1>
+      <p class="mx-auto mt-4 max-w-md text-lg text-muted-foreground" data-reveal>
+        This field hasn't been planted yet. The page may have moved, or the link might be mistyped.
+      </p>
+      <div class="mt-10 flex flex-wrap justify-center gap-3" data-reveal>
+        <a href="/" class={buttonClass({ size: "lg" })}><ArrowLeftIcon data-icon="inline-start" /> Back home</a>
+        <button type="button" data-open-search class={buttonClass({ size: "lg", variant: "outline" })}>
+          <SearchIcon data-icon="inline-start" /> Search the site
+        </button>
+      </div>
+      <nav class="mt-12 flex flex-wrap justify-center gap-x-6 gap-y-2 text-sm text-muted-foreground" aria-label="Popular pages">
+        {siteConfig.nav.map((n) => <a href={n.href} class="hover:text-foreground">{n.label}</a>)}
+      </nav>
+    </div>
+  </section>
+</BaseLayout>
+
+<script>
+  import { gsap, prefersReducedMotion } from "@/scripts/motion";
+  if (!prefersReducedMotion()) {
+    const digits = gsap.utils.toArray<HTMLElement>("[data-digit]");
+    gsap.from(digits, { yPercent: 120, rotate: (i) => (i - 1) * 25, opacity: 0, duration: 1.2, ease: "expo.out", stagger: 0.12 });
+    // the zero gently floats
+    gsap.to(digits[1], { y: -18, rotate: 8, duration: 2.4, ease: "sine.inOut", yoyo: true, repeat: -1, delay: 1.2 });
+  }
+</script>

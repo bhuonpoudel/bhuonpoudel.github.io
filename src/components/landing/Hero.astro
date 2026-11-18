@@ -1,0 +1,82 @@
+---
+import { ArrowDownIcon, ArrowRightIcon, DownloadIcon } from "lucide-react";
+import { buttonClass } from "@/lib/variants";
+import { siteConfig } from "@/config/site";
+import Topography from "./Topography.astro";
+
+interface Props {
+  /** Wrap words in *asterisks* to render them in the accent serif italic. */
+  headline: string;
+  intro: string;
+}
+const { headline, intro } = Astro.props;
+const parts = headline.split(/(\*[^*]+\*)/g).filter(Boolean);
+---
+
+<section class="relative isolate flex min-h-[calc(100dvh-4rem)] items-center overflow-hidden" data-hero>
+  <!-- background -->
+  <div class="absolute inset-0 -z-10 will-change-transform" data-hero-bg>
+    <Topography class="absolute inset-0 h-full w-full text-primary/70" />
+    <div class="absolute inset-0 bg-radial-[ellipse_at_center] from-transparent via-background/40 to-background"></div>
+  </div>
+  <div
+    class="pointer-events-none absolute top-0 left-0 -z-10 size-224 bg-radial-[closest-side] from-primary/20 to-transparent will-change-transform"
+    data-hero-glow
+    aria-hidden="true"
+  >
+  </div>
+
+  <div class="container-page py-20 will-change-[transform,opacity]" data-hero-content>
+    <p class="hero-in mb-8 inline-flex items-center gap-2.5 rounded-full border bg-background/60 px-3 py-1.5 text-xs backdrop-blur" data-hero-fade>
+      <span class="relative flex size-2">
+        <span class="absolute inline-flex h-full w-full animate-ping rounded-full bg-primary opacity-60"></span>
+        <span class="relative inline-flex size-2 rounded-full bg-primary"></span>
+      </span>
+      {siteConfig.availability}
+    </p>
+
+    <p class="hero-in mb-6 font-display text-3xl tracking-tight md:text-4xl" data-hero-fade>
+      {siteConfig.name}
+    </p>
+
+    <h1 class="hero-in max-w-5xl text-[clamp(2.75rem,8vw,7.5rem)] leading-[0.95] font-medium tracking-[-0.035em]" data-hero-title>
+      {
+        parts.map((p) =>
+          p.startsWith("*") ? (
+            <em class="font-display font-normal tracking-normal text-primary italic">{p.slice(1, -1)}</em>
+          ) : (
+            <Fragment>{p}</Fragment>
+          ),
+        )
+      }
+    </h1>
+
+    <div class="mt-10 grid gap-10 md:grid-cols-[1fr_auto] md:items-end">
+      <p class="hero-in max-w-xl text-lg text-muted-foreground md:text-xl" data-hero-fade>{intro}</p>
+      <div class="hero-in flex flex-wrap gap-3" data-hero-fade>
+        <a href="/projects" class={buttonClass({ size: "lg", className: "h-11 rounded-full px-6" })}>
+          View projects <ArrowRightIcon data-icon="inline-end" />
+        </a>
+        <a href={siteConfig.resume} download class={buttonClass({ size: "lg", variant: "outline", className: "h-11 rounded-full px-6" })}>
+          <DownloadIcon data-icon="inline-start" /> CV
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <a
+    href="#intro"
+    class="hero-in absolute bottom-8 left-1/2 hidden -translate-x-1/2 flex-col items-center gap-2 text-xs text-muted-foreground md:flex"
+    data-hero-fade
+  >
+    Scroll
+    <span class="grid size-9 place-items-center rounded-full border"><ArrowDownIcon className="size-4 animate-bounce" /></span>
+  </a>
+</section>
+
+<style>
+  /* hidden until GSAP animates them in (only when JS motion is active) */
+  :global(html.js-motion) .hero-in {
+    visibility: hidden;
+  }
+</style>

@@ -1,0 +1,56 @@
+---
+import { siteConfig } from "@/config/site";
+import Logo from "./Logo.astro";
+import MobileNav from "./MobileNav";
+import ThemeSwitcher from "@/components/theme/ThemeSwitcher";
+import SearchDialog from "@/components/search/SearchDialog";
+
+const path = Astro.url.pathname.replace(/\/$/, "") || "/";
+const isActive = (href: string) => path === href || path.startsWith(`${href}/`);
+---
+
+<header
+  id="site-header"
+  class="sticky top-0 z-40 border-b border-transparent transition-[background-color,border-color] duration-300 data-[scrolled=true]:border-border data-[scrolled=true]:bg-background/80 data-[scrolled=true]:backdrop-blur-md"
+>
+  <div class="container-page flex h-16 items-center justify-between gap-4">
+    <Logo showName={false} />
+
+    <nav class="hidden items-center gap-1 md:flex" aria-label="Main">
+      {
+        siteConfig.nav.map((item) => (
+          <a
+            href={item.href}
+            aria-current={isActive(item.href) ? "page" : undefined}
+            class="relative rounded-full px-3 py-1.5 text-sm text-muted-foreground transition-colors hover:text-foreground aria-[current=page]:text-foreground"
+          >
+            {item.label}
+            {isActive(item.href) && (
+              <span class="absolute inset-x-3 -bottom-px h-px bg-primary" aria-hidden="true" />
+            )}
+          </a>
+        ))
+      }
+    </nav>
+
+    <div class="flex items-center gap-1">
+      <SearchDialog client:idle />
+      <ThemeSwitcher client:idle />
+      <MobileNav client:idle items={[...siteConfig.nav]} currentPath={path} resume={siteConfig.resume} />
+    </div>
+  </div>
+</header>
+
+<script>
+  const header = document.getElementById("site-header");
+  let scrolled: boolean | undefined;
+  // only touch the DOM when the state flips, not on every scroll frame
+  const update = () => {
+    const next = window.scrollY > 8;
+    if (next === scrolled) return;
+    scrolled = next;
+    header?.setAttribute("data-scrolled", String(next));
+  };
+  update();
+  window.addEventListener("scroll", update, { passive: true });
+</script>

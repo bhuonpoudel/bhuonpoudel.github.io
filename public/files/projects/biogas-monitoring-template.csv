@@ -1,0 +1,5 @@
+# Illustrative template for community biogas plant monitoring. Replace with field data
+plant_id,ward,digester_type,volume_m3,households_served,daily_feed_kg,water_ratio,gas_burning_hours,slurry_use,condition
+CB-01,,GGC-2047,,,,1:1,,,
+CB-02,,GGC-2047,,,,1:1,,,
+CB-03,,Floating drum,,,,1:1,,,
